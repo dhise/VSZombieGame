@@ -133,8 +133,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="createBackground.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="ZombieArena.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ZombieArena.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
