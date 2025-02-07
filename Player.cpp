@@ -129,7 +129,7 @@ void Player::resetPlayerStats()
 		}
 		if (m_RightPressed)
 		{
-			m_Position.y += m_Speed * elapsedTime;
+			m_Position.x += m_Speed * elapsedTime;
 		}
 		if (m_LeftPressed)
 		{

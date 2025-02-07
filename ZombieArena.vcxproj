@@ -135,9 +135,12 @@
   <ItemGroup>
     <ClCompile Include="createBackground.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="TextureHolder.cpp" />
     <ClCompile Include="ZombieArena.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TextureHolder.h" />
+    <ClInclude Include="Zombie.h" />
     <ClInclude Include="ZombieArena.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

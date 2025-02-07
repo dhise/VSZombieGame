@@ -1,18 +1,5 @@
 #include "ZombieArena.h"
 
-
-
-
-
-
-
-
-
-
-
-
-//TO DO MOVEMENT IS FUCKED AND PLAYER IS GLIDING EVERYWHERE FIX THAT BEFORE ANYTHING ELSE
-
 using namespace sf;
 
 int createBackground(VertexArray& rVA, IntRect arena)

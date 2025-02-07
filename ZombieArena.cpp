@@ -52,7 +52,7 @@ int main()
 	while (window.isOpen())
 	{
 		//Input shit
-		//I think this is how you use polling i dont fucking know im tired
+		//I think this is how you use polling i dont fucking know im tired dbl check next time game crashes
 		Event event;
 		while (window.pollEvent(event))
 		{
@@ -114,6 +114,14 @@ int main()
 			else
 			{
 				player.stopLeft();
+			}
+			if (Keyboard::isKeyPressed(Keyboard::D))
+			{
+				player.moveRight();
+			}
+			else
+			{
+				player.stopRight();
 			}
 		}//End WASD input checking
 		//Handle LEVELING_UP state
