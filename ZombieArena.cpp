@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Bullet.h"
 
-
+//To do add bullet array
 
 using namespace sf;
 
