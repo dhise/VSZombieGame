@@ -1,7 +1,9 @@
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "ZombieArena.h"
+#include "TextureHolder.h"
 #include <iostream>
+#include "Bullet.h"
 
 
 using namespace sf;
@@ -9,6 +11,8 @@ using namespace sf;
 
 int main()
 {
+	//Instance of TextureHolder
+	TextureHolder holder;
 
 	//4 States the game will only ever be in
 	enum class State { PAUSED, LEVELING_UP, GAME_OVER, PLAYING };
@@ -45,8 +49,16 @@ int main()
 	//Create the background
 	VertexArray background;
 	//Load the texture for our background vertex array
-	Texture textureBackground;
-	textureBackground.loadFromFile("resources/graphics/background_sheet.png");
+	Texture textureBackground = TextureHolder::GetTexture("resources/graphics/background_sheet.png");
+
+	//Prepare zombie horde
+
+	int numZombies;
+	int numZombiesAlive;
+	Zombie* zombies = nullptr;
+
+
+
 
 	//Main game loop
 	while (window.isOpen())
@@ -166,6 +178,12 @@ int main()
 				//int tileSize = 50;
 				//Spawn player in middle of arena
 				player.spawn(arena, resolution, tileSize);
+				//Create a horde
+				numZombies = 10;
+				//Delete previously allocated memory
+				delete[] zombies;
+				zombies = createHorde(numZombies, arena);
+				numZombiesAlive = numZombies;
 
 				//reset clock to stop frame jumping idk if there is a way to do this other than always resetting clock
 				clock.restart();
@@ -198,6 +216,15 @@ int main()
 
 			//Make the view centre around player
 			mainView.setCenter(player.getCenter());
+			
+			//Loop through each zombie and update them
+			for (int i = 0; i < numZombies; i++)
+			{
+				if (zombies[i].isAlive())
+				{
+					zombies[i].update(dt.asSeconds(), playerPosition);
+				}
+			}
 		}//End updating 
 
 		//Draw the scene
@@ -208,6 +235,11 @@ int main()
 			window.setView(mainView);
 			//Draw the background
 			window.draw(background, &textureBackground);
+			//Draw zombies
+			for (int i = 0; i < numZombies; i++)
+			{
+				window.draw(zombies[i].getSprite());
+			}
 			//Draw player
 			window.draw(player.getSprite());
 		}
@@ -229,7 +261,8 @@ int main()
 			
 	
 	}//End game loop
-
+	//Delete any previously existing allocated memory
+	delete[] zombies;
 
 
 	return 0;

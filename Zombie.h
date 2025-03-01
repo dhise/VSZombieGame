@@ -18,6 +18,8 @@ private:
 	const int OFFSET{ 101 - MAX_VARRIANCE };
 	//Zombie location
 	Vector2f m_Position;
+	//Sprite for zombie
+	Sprite m_Sprite;
 	//How fast can this one run
 	float m_Speed;
 	//How much health
@@ -25,5 +27,20 @@ private:
 	//Is it alive
 	bool m_Alive;
 
-	//Public todo
+public:
+	//Handle bullet hitting zombie
+	bool hit();
+	//Find out if zombie is alive
+	bool isAlive();
+	//Spawn a new zombie
+	void spawn(float startX, float startY, int type, int seed);
+	//Return a rectangle that is the position in the world
+	FloatRect getPosition();
+	//Get a copy of the sprite to draw
+	Sprite getSprite();
+	//Update the zombie each frame
+	void update(float elapsedTime, Vector2f playerLocation);
 };
+
+
+

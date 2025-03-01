@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "TextureHolder.h"
 #include <iostream>
 
 //So like the constructor takes the player class we made and then we can make an object and pick which variables from the class to initialize it with
@@ -12,8 +13,7 @@ Player::Player()
 	m_Sprite()
 {
 	//Associate texture with sprite
-	m_Texture.loadFromFile("resources/graphics/player.png");
-	m_Sprite.setTexture(m_Texture);
+	m_Sprite = Sprite(TextureHolder::GetTexture("resources/graphics/player.png"));
 
 	//Set origin of sprite to center
 	m_Sprite.setOrigin(25, 25);
