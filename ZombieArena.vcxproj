@@ -143,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Pickup.h" />
     <ClInclude Include="TextureHolder.h" />
     <ClInclude Include="Zombie.h" />
     <ClInclude Include="ZombieArena.h" />

@@ -5,7 +5,7 @@
 #include <iostream>
 #include "Bullet.h"
 
-//To do add bullet array
+
 
 using namespace sf;
 
@@ -56,11 +56,22 @@ int main()
 
 	int numZombies;
 	int numZombiesAlive;
-	Zombie* zombies = nullptr;
-
-
-
-
+	Zombie* zombies = NULL;
+	//100 bullets should be fine
+	Bullet bullets[100];
+	int currentBullet = 0;
+	int bulletsSpare = 24;
+	int bulletsInClip = 6;
+	int clipSize = 6;
+	float fireRate = 1;
+	//When was the fire button pressed last
+	Time lastPressed;
+	//Hide the mouse pointer and replace it with a crosshair
+	window.setMouseCursorVisible(false);
+	Sprite spriteCrosshair;
+	Texture textureCrosshair = TextureHolder::GetTexture("resources/graphics/crosshair.png");
+	spriteCrosshair.setTexture(textureCrosshair);
+	spriteCrosshair.setOrigin(25, 5);
 	//Main game loop
 	while (window.isOpen())
 	{
@@ -90,7 +101,26 @@ int main()
 				}
 				if (state == State::PLAYING)
 				{
-
+					//Reloading
+					if (event.key.code == Keyboard::R)
+					{
+						if (bulletsSpare >= clipSize)
+						{
+							//Plent of ammo. Reload
+							bulletsInClip = clipSize;
+							bulletsSpare -= clipSize;
+						}
+						else if (bulletsSpare > 0)
+						{
+							//Only few bullets left
+							bulletsInClip = bulletsSpare;
+							bulletsSpare = 0;
+						}
+						else
+						{
+							//Move here soon
+						}
+					}
 				}
 			}
 		}//End event polling
@@ -135,6 +165,24 @@ int main()
 			else
 			{
 				player.stopRight();
+			}
+			//Fire a bullet
+			if (Mouse::isButtonPressed(sf::Mouse::Left))
+			{
+				//USE THIS FORMULAT FOR FURTHER SHOOT SPEED OF WEAPONS UI would say fire rate is = to 1000/fire rate   so if fire rate is 50,  1000 / 50 = 20. So the user would see Fire Rate: 20/second  
+
+				if (gameTimeTotal.asMilliseconds() - lastPressed.asMilliseconds() > 1000 / fireRate && bulletsInClip > 0)
+				{
+					//Pass the centre of the player and the center of the cross-hair to shoot function
+					bullets[currentBullet].shoot(player.getCenter().x, player.getCenter().y, mouseWorldPosition.x, mouseWorldPosition.y);
+					currentBullet++;
+					if (currentBullet > 90)
+					{
+						currentBullet = 0;
+					}
+					lastPressed = gameTimeTotal;
+					bulletsInClip--;
+				}
 			}
 		}//End WASD input checking
 		//Handle LEVELING_UP state
@@ -209,6 +257,8 @@ int main()
 			mouseScreenPosition = Mouse::getPosition();
 			//Now convert mouse position to world  based on coordinates of mainView
 			mouseWorldPosition = window.mapPixelToCoords(Mouse::getPosition(), mainView);
+			//Set crosshair to the mouse world location
+			spriteCrosshair.setPosition(mouseWorldPosition);
 
 			//Update the player
 			player.update(dtAsSeconds, Mouse::getPosition());
@@ -226,6 +276,14 @@ int main()
 					zombies[i].update(dt.asSeconds(), playerPosition);
 				}
 			}
+			//Update any bullets that are in flight
+			for (int i = 0; i < 100; i++)
+			{
+				if (bullets[i].isInFlight())
+				{
+					bullets[i].update(dtAsSeconds);
+				}
+			}
 		}//End updating 
 
 		//Draw the scene
@@ -241,8 +299,17 @@ int main()
 			{
 				window.draw(zombies[i].getSprite());
 			}
+			for (int i = 0; i < 100; i++)
+			{
+				if (bullets[i].isInFlight())
+				{
+					window.draw(bullets[i].getShape());
+				}
+			}
 			//Draw player
 			window.draw(player.getSprite());
+			//Draw the crosshair
+			window.draw(spriteCrosshair);
 		}
 		if (state == State::LEVELING_UP)
 		{
