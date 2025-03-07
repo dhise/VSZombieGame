@@ -4,8 +4,13 @@
 #include "TextureHolder.h"
 #include <iostream>
 #include "Bullet.h"
-
-
+#include "Pickup.h"
+/////////////////////////////PAGE 355//////////////////////////////////
+/////////////////////////////PAGE 355//////////////////////////////////
+/////////////////////////////PAGE 355//////////////////////////////////
+/////////////////////////////PAGE 355//////////////////////////////////
+/////////////////////////////PAGE 355//////////////////////////////////
+/////////////////////////////PAGE 355//////////////////////////////////
 
 using namespace sf;
 
@@ -67,11 +72,13 @@ int main()
 	//When was the fire button pressed last
 	Time lastPressed;
 	//Hide the mouse pointer and replace it with a crosshair
-	window.setMouseCursorVisible(false);
+	window.setMouseCursorVisible(true);
 	Sprite spriteCrosshair;
 	Texture textureCrosshair = TextureHolder::GetTexture("resources/graphics/crosshair.png");
 	spriteCrosshair.setTexture(textureCrosshair);
-	spriteCrosshair.setOrigin(25, 5);
+	spriteCrosshair.setOrigin(25, 25);
+	Pickup healthPickup(1);
+	Pickup ammoPickup(2);
 	//Main game loop
 	while (window.isOpen())
 	{
@@ -227,6 +234,9 @@ int main()
 				//int tileSize = 50;
 				//Spawn player in middle of arena
 				player.spawn(arena, resolution, tileSize);
+				//Configure the pick-ups
+				healthPickup.setArena(arena);
+				ammoPickup.setArena(arena);
 				//Create a horde
 				numZombies = 10;
 				//Delete previously allocated memory
@@ -284,6 +294,9 @@ int main()
 					bullets[i].update(dtAsSeconds);
 				}
 			}
+			//Updae the pickups
+			healthPickup.update(dtAsSeconds);
+			ammoPickup.update(dtAsSeconds);
 		}//End updating 
 
 		//Draw the scene
@@ -308,6 +321,15 @@ int main()
 			}
 			//Draw player
 			window.draw(player.getSprite());
+			//Draw the pick ups if they are currently spawned
+			if (ammoPickup.isSpawned())
+			{
+				window.draw(ammoPickup.getSprite());
+			}
+			if (healthPickup.isSpawned())
+			{
+				window.draw(healthPickup.getSprite());
+			}
 			//Draw the crosshair
 			window.draw(spriteCrosshair);
 		}
