@@ -1,3 +1,4 @@
+#include <sstream>
 #include <SFML/Graphics.hpp>
 #include "Player.h"
 #include "ZombieArena.h"
@@ -5,12 +6,12 @@
 #include <iostream>
 #include "Bullet.h"
 #include "Pickup.h"
-/////////////////////////////PAGE 355//////////////////////////////////
-/////////////////////////////PAGE 355//////////////////////////////////
-/////////////////////////////PAGE 355//////////////////////////////////
-/////////////////////////////PAGE 355//////////////////////////////////
-/////////////////////////////PAGE 355//////////////////////////////////
-/////////////////////////////PAGE 355//////////////////////////////////
+/////////////////////////////PAGE 372//////////////////////////////////
+/////////////////////////////PAGE 372//////////////////////////////////
+/////////////////////////////PAGE 372//////////////////////////////////
+/////////////////////////////PAGE 372//////////////////////////////////
+/////////////////////////////PAGE 372//////////////////////////////////
+/////////////////////////////PAGE 372//////////////////////////////////
 
 using namespace sf;
 
@@ -79,6 +80,9 @@ int main()
 	spriteCrosshair.setOrigin(25, 25);
 	Pickup healthPickup(1);
 	Pickup ammoPickup(2);
+	//About the game
+	int score{ 0 };
+	int hiScore{ 0 };
 	//Main game loop
 	while (window.isOpen())
 	{
@@ -277,7 +281,7 @@ int main()
 
 			//Make the view centre around player
 			mainView.setCenter(player.getCenter());
-			
+
 			//Loop through each zombie and update them
 			for (int i = 0; i < numZombies; i++)
 			{
@@ -294,10 +298,69 @@ int main()
 					bullets[i].update(dtAsSeconds);
 				}
 			}
-			//Updae the pickups
+			//Update the pickups
 			healthPickup.update(dtAsSeconds);
 			ammoPickup.update(dtAsSeconds);
-		}//End updating 
+			//Collision detection
+			//Have any zombies been shot?
+			for (int i = 0; i < 100; i++)
+			{
+				for (int j = 0; j < numZombies; j++)
+				{
+					if (bullets[i].isInFlight() && zombies[j].isAlive())
+					{
+						if (bullets[i].getPosition().intersects(zombies[j].getPosition()))
+						{
+							//Stop the bullet
+							bullets[i].stop();
+							//Register the hit and see if it was a kill
+							if (zombies[j].hit())
+							{
+								//Not just a hit but a kill too
+								score += 10;
+								if (score >= hiScore)
+								{
+									hiScore = score;
+								}
+								numZombiesAlive--;
+								//When all the zombies are dead(again)
+								if (numZombiesAlive == 0)
+								{
+									state = State::LEVELING_UP;
+								}
+
+							}
+						}
+					}
+				}
+			}//End zombie being shot
+			//Have any zombies touched player
+			for (int i = 0; i < numZombies; i++)
+			{
+				if (player.getPosition().intersects(zombies[i].getPosition()) && zombies[i].isAlive())
+				{
+					if (player.hit(gameTimeTotal))
+					{
+						//More here later
+					}
+					if (player.getHealth() <= 0)
+					{
+						state = State::GAME_OVER;
+					}
+				}
+			} //End player zombie collision
+			//Has the player touched health pickup
+			if (player.getPosition().intersects(healthPickup.getPosition()) && healthPickup.isSpawned())
+			{
+				player.increaseHealthLevel(healthPickup.gotIt());
+			}
+			//Has the player touched ammo pickup
+			if (player.getPosition().intersects(ammoPickup.getPosition()) && ammoPickup.isSpawned())
+			{
+				bulletsSpare += ammoPickup.gotIt();
+			}
+			std::cout << "Player health is " << player.getHealth() << std::endl;
+		}//End updating the scene
 
 		//Draw the scene
 		if (state == State::PLAYING)

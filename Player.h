@@ -75,4 +75,6 @@ public:
 	void increaseHealthLevel(int amount);
 	//How much health does player currently have
 	int getHealth();
+
+
 };
